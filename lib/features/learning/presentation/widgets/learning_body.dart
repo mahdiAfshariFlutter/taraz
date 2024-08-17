@@ -1,45 +1,54 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:code_challenge/config/models/event_status.dart';
 import 'package:code_challenge/features/learning/data/models/lesson_model.dart';
-import 'package:code_challenge/features/learning/presentation/widgets/lesson_item.dart';
+import 'package:code_challenge/features/learning/presentation/widgets/lesson_item_widget.dart';
+import 'package:code_challenge/features/learning/presentation/widgets/seasons_list.dart';
 import 'package:flutter/material.dart';
 
-class LearningBodyWidget extends StatefulWidget {
+class LearningBody extends StatefulWidget {
   final EventStatus<List<LessonModel>> lessonsData;
-  const LearningBodyWidget({super.key, required this.lessonsData});
+  const LearningBody({super.key, required this.lessonsData});
 
   @override
   // ignore: library_private_types_in_public_api
-  _LearningBodyWidgetState createState() => _LearningBodyWidgetState();
+  _LearningBodyState createState() => _LearningBodyState();
 }
 
-class _LearningBodyWidgetState extends State<LearningBodyWidget> {
+class _LearningBodyState extends State<LearningBody> {
   int currentIndex = 2;
-  final CarouselSliderController controller = CarouselSliderController();
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
   final PageController pageController = PageController();
+
+  void onPageChanged(int index) {
+    if (mounted) {
+      setState(() {
+        currentIndex = index;
+      });
+    }
+    pageController.jumpToPage(index);
+    carouselController.animateToPage(index);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         PageView.builder(
-           physics: const NeverScrollableScrollPhysics(),
-           controller: pageController,
-           itemCount: widget.lessonsData.data!.length,
-           itemBuilder: (context, index) {
-             return Center(
-               child: Text(
-                 'سرفصل های درس ${widget.lessonsData.data![index].name}',
-                 style: const TextStyle(fontSize: 24),
-               ),
-             );
-           },
-           onPageChanged: (index) {
-             setState(() {
-               currentIndex = index;
-             });
-           },
-         ),
+          physics: const NeverScrollableScrollPhysics(),
+          controller: pageController,
+          itemCount: widget.lessonsData.data!.length,
+          itemBuilder: (context, index) {
+            return SeasonsList(
+              name: widget.lessonsData.data![index].name!,
+              count: widget.lessonsData.data!.length,
+            );
+          },
+          onPageChanged: (index) {
+            onPageChanged(index);
+            //call event for seasons of each lesson
+          },
+        ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -69,13 +78,10 @@ class _LearningBodyWidgetState extends State<LearningBodyWidget> {
                         (index == currentIndex + 2);
                     return GestureDetector(
                       onTap: () {
-                        setState(() {
-                          currentIndex = index;
-                        });
-                        controller.animateToPage(index);
-                        pageController.jumpToPage(index);
+                        onPageChanged(index);
                       },
-                      child: LessonItem(
+                      child: LessonItemWidget(
+                        key: ValueKey(index),
                         index: index,
                         isSelected: index == currentIndex,
                         oneTheSide: oneTheSide,
@@ -84,7 +90,7 @@ class _LearningBodyWidgetState extends State<LearningBodyWidget> {
                       ),
                     );
                   },
-                  carouselController: controller,
+                  carouselController: carouselController,
                   options: CarouselOptions(
                     enlargeCenterPage: true,
                     autoPlay: false,
@@ -93,10 +99,7 @@ class _LearningBodyWidgetState extends State<LearningBodyWidget> {
                     initialPage: 2,
                     viewportFraction: 0.25,
                     onPageChanged: (index, reason) {
-                      setState(() {
-                        currentIndex = index;
-                      });
-                      pageController.jumpToPage(index);
+                      onPageChanged(index);
                     },
                   ),
                 );

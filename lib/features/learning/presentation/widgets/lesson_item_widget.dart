@@ -4,14 +4,14 @@ import 'package:code_challenge/features/learning/data/models/lesson_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class LessonItem extends StatelessWidget {
+class LessonItemWidget extends StatelessWidget {
   final int index;
   final bool isSelected;
   final bool oneTheSide;
   final bool twoTheSide;
   final LessonModel lessonData;
 
-  const LessonItem(
+  const LessonItemWidget(
       {super.key,
       required this.index,
       required this.isSelected,
@@ -23,7 +23,8 @@ class LessonItem extends StatelessWidget {
   Widget build(BuildContext context) {
     double progressPercentage = lessonData.hamdarsUserCurrentUnitLevelPoint! /
         (lessonData.hamdarsUserMaxUnitLevelPoint! -
-            lessonData.hamdarsUserMinUnitLevelPoint!) * 100;
+            lessonData.hamdarsUserMinUnitLevelPoint!) *
+        100;
     double paddingSize = isSelected
         ? 80
         : oneTheSide
@@ -38,15 +39,17 @@ class LessonItem extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8),
               child: Container(
                 decoration: ShapeDecoration(
-                    shape: const RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(99))),
-                    color: Colors.grey.shade100),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(99))),
+                  color: Colors.grey.shade100,
+                ),
                 child: Column(
                   children: [
-                    CircularSegmentWidget(
+                    PercentCircularSegmentWidget(
                       percentage: progressPercentage,
-                      icon: lessonData.unitIcon!, // آیکون SVG که می‌خواهید نمایش دهید
+                      icon: lessonData
+                          .unitIcon!, // آیکون SVG که می‌خواهید نمایش دهید
                     ),
                     const SizedBox(
                       height: 16,
@@ -83,7 +86,7 @@ class LessonItem extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(bottom: paddingSize),
-              child: CircularSegmentWidget(
+              child: PercentCircularSegmentWidget(
                 percentage: progressPercentage,
                 icon: lessonData.unitIcon!, // آیکون SVG که می‌خواهید نمایش دهید
               ),
@@ -96,11 +99,11 @@ class LessonItem extends StatelessWidget {
 }
 
 //progres
-class CircularSegmentWidget extends StatelessWidget {
+class PercentCircularSegmentWidget extends StatelessWidget {
   final double percentage;
   final String icon;
 
-  const CircularSegmentWidget({
+  const PercentCircularSegmentWidget({
     super.key,
     required this.percentage,
     required this.icon,
@@ -112,20 +115,25 @@ class CircularSegmentWidget extends StatelessWidget {
       children: [
         CustomPaint(
           size: const Size(90, 90),
-          painter: CircularSegmentPainter(
+          painter: PercentCircularSegmentPainter(
             percentage: percentage,
           ),
         ),
-        SvgPicture.network(icon,fit: BoxFit.contain,width: 75,height: 75,)
+        SvgPicture.network(
+          icon,
+          fit: BoxFit.contain,
+          width: 75,
+          height: 75,
+        )
       ],
     );
   }
 }
 
-class CircularSegmentPainter extends CustomPainter {
+class PercentCircularSegmentPainter extends CustomPainter {
   final double percentage;
 
-  CircularSegmentPainter({
+  PercentCircularSegmentPainter({
     required this.percentage,
   });
 
@@ -163,7 +171,7 @@ class CircularSegmentPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CircularSegmentPainter oldDelegate) {
+  bool shouldRepaint(PercentCircularSegmentPainter oldDelegate) {
     return oldDelegate.percentage != percentage;
   }
 }
