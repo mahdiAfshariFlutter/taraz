@@ -1,16 +1,25 @@
 part of 'learning_bloc.dart';
 
-class LearningState extends Equatable {
-  final EventStatus<List<LessonModel>> getLessonsListStatus;
-  const LearningState({required this.getLessonsListStatus});
+sealed class LearningState extends Equatable {
+  const LearningState();
 
   @override
-  List<Object> get props => [getLessonsListStatus];
+  List<Object> get props => [];
+}
 
-  LearningState copyWith({
-    EventStatus<List<LessonModel>>? newGetLessonsListStatus,
-  }) {
-    return LearningState(
-        getLessonsListStatus: newGetLessonsListStatus ?? getLessonsListStatus);
-  }
+class LearninigInitial extends LearningState {}
+
+class Loading extends LearningState {}
+
+class Error extends LearningState {
+  final String message;
+
+  const Error({required this.message});
+}
+
+class Completed extends LearningState {
+  final LessonEntity lessonDataEntity;
+
+  const Completed(
+      {required this.lessonDataEntity});
 }

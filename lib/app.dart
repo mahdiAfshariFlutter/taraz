@@ -12,7 +12,7 @@ class App extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => locator<LearningBloc>(),
+          create: (_) => sl<LearningBloc>(),
         ),
       ],
       child: const MaterialApp(

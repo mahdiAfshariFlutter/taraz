@@ -1,7 +1,7 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
-import 'package:code_challenge/config/models/data_state.dart';
-import 'package:code_challenge/config/models/event_status.dart';
-import 'package:code_challenge/features/learning/data/models/lesson_model.dart';
+import 'package:code_challenge/features/learning/domain/entities/lesson_entitie.dart';
 import 'package:code_challenge/features/learning/domain/usecases/get_lessons_list_usecase.dart';
 import 'package:equatable/equatable.dart';
 
@@ -12,30 +12,20 @@ class LearningBloc extends Bloc<LearningEvent, LearningState> {
   final GetLessonsListUsecase getLessonsListUsecase;
   LearningBloc({
     required this.getLessonsListUsecase,
-  }) : super(
-          LearningState(
-            getLessonsListStatus: EventInitial(),
-          ),
-        ) {
-    //
-    on<GetLessonsListEvent>((event, emit) async {
-      emit(
-        state.copyWith(
-          newGetLessonsListStatus: const EventLoading(),
-        ),
-      );
-      var result = await getLessonsListUsecase();
-      if (result is DataSuccess) {
-        return emit(
-          state.copyWith(newGetLessonsListStatus: EventCompleted(result.data!)),
-        );
-      } else if (result is DataFailed) {
-        return emit(
-          state.copyWith(
-            newGetLessonsListStatus: EventError(message: result.error!),
-          ),
-        );
-      }
-    });
+  }) : super(LearninigInitial()) {
+    on<GetLessonsListEvent>(onGetLessonsList);
+  }
+  //
+  FutureOr<void> onGetLessonsList(
+      GetLessonsListEvent event, Emitter<LearningState> emit) async {
+    emit(Loading());
+
+    final res = await getLessonsListUsecase();
+    emit(await res.fold((failure) {
+      return Error(message: failure.getErrorMessage);
+      //or show exact server error message
+    }, (response) {
+      return Completed(lessonDataEntity: response);
+    }));
   }
 }

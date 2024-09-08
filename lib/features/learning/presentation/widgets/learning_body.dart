@@ -1,12 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:code_challenge/config/models/event_status.dart';
-import 'package:code_challenge/features/learning/data/models/lesson_model.dart';
+import 'package:code_challenge/features/learning/domain/entities/lesson_entitie.dart';
 import 'package:code_challenge/features/learning/presentation/widgets/lesson_item_widget.dart';
 import 'package:code_challenge/features/learning/presentation/widgets/seasons_list.dart';
 import 'package:flutter/material.dart';
 
 class LearningBody extends StatefulWidget {
-  final EventStatus<List<LessonModel>> lessonsData;
+  final LessonEntity lessonsData;
   const LearningBody({super.key, required this.lessonsData});
 
   @override
@@ -37,11 +36,11 @@ class _LearningBodyState extends State<LearningBody> {
         PageView.builder(
           physics: const NeverScrollableScrollPhysics(),
           controller: pageController,
-          itemCount: widget.lessonsData.data!.length,
+          itemCount: widget.lessonsData.lessons.length,
           itemBuilder: (context, index) {
             return SeasonsList(
-              name: widget.lessonsData.data![index].name!,
-              count: widget.lessonsData.data!.length,
+              name: widget.lessonsData.lessons[index].name!,
+              count: widget.lessonsData.lessons.length,
             );
           },
           onPageChanged: (index) {
@@ -70,7 +69,7 @@ class _LearningBodyState extends State<LearningBody> {
               backgroundColor: Colors.transparent,
               builder: (context) {
                 return CarouselSlider.builder(
-                  itemCount: widget.lessonsData.data!.length,
+                  itemCount: widget.lessonsData.lessons.length,
                   itemBuilder: (context, index, realIndex) {
                     bool oneTheSide = (index == currentIndex - 1) ||
                         (index == currentIndex + 1);
@@ -86,7 +85,7 @@ class _LearningBodyState extends State<LearningBody> {
                         isSelected: index == currentIndex,
                         oneTheSide: oneTheSide,
                         twoTheSide: twoTheSide,
-                        lessonData: widget.lessonsData.data![index],
+                        lessonData: widget.lessonsData.lessons[index],
                       ),
                     );
                   },

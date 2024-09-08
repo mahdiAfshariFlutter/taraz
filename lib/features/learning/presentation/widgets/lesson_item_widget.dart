@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:code_challenge/features/learning/data/models/lesson_model.dart';
+import 'package:code_challenge/features/learning/domain/entities/lesson_entitie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -9,7 +9,7 @@ class LessonItemWidget extends StatelessWidget {
   final bool isSelected;
   final bool oneTheSide;
   final bool twoTheSide;
-  final LessonModel lessonData;
+  final LessonDataEntity lessonData;
 
   const LessonItemWidget(
       {super.key,
